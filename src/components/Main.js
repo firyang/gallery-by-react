@@ -19,7 +19,7 @@ imgDatas = function(imgArr) {
 
 /*
  * 随机生成一个数值
- * @param 范围数组, [min, max]
+ * @param 数组, [min, max]
  */
 function random(range) {
 	var max = Math.ceil(Math.max(range[0], range[1])),
@@ -40,6 +40,14 @@ class ImgFigure extends React.Component {
 	render() {
 		var styleObj = {};
 		styleObj = this.props.imgArangeArr.pos;
+
+		(['WebkitTransform', 'msTransform', 'OTransform', 'MozTransform', 'transform']).forEach(function(value) {
+			styleObj[value] = 'rotate(' + this.props.imgArangeArr.rotate + 'deg)';
+		}.bind(this));
+
+		if(this.props.imgArangeArr.isCenter) {
+			styleObj.zIndex = 11;
+		}
 
 		return (
 			<figure className="img_figure" style={styleObj}>
@@ -90,7 +98,9 @@ class AppComponent extends React.Component {
 	  			pos: {
 	  				left: 0,
 	  				top: 0
-	  			}
+	  			},
+	  			rotate: 0,
+	  			isCenter: false
 	  		}*/
   		]
   	}
@@ -148,7 +158,8 @@ class AppComponent extends React.Component {
   	//布局居中图片
   	var imgCenterArr = imgArangeArr.splice(index, 1);
   	imgCenterArr[0] = {
-  		pos: centerPos
+  		pos: centerPos,
+  		isCenter: true
   	};
 
   	//布局上侧图片，取1张或0张
@@ -162,7 +173,8 @@ class AppComponent extends React.Component {
   			pos: {
   				left: random(vPosRangeX),
   				top: random(vPosRangeTopY)
-  			}
+  			},
+  			rotate: random([-30, 30])
   		}
   	});
 
@@ -181,7 +193,8 @@ class AppComponent extends React.Component {
 			pos: {
 				left: random(hPosRangeLOR),
 				top: random(hPosRangeY)
-			}
+			},
+			rotate: random([-30, 30])
 		}
   	}
 
@@ -207,7 +220,9 @@ class AppComponent extends React.Component {
 	  		pos: {
 	  			left: '0px',
 	  			top: '0px'
-	  		}
+	  		},
+	  		rotate: 0,
+	  		isCenter: false
 	  	}
 	  }
 
