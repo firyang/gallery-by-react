@@ -35,7 +35,15 @@ function random(range) {
 class ImgFigure extends React.Component {
 	constructor(props) {
 		super(props);
+    this.handlClick = this.handlClick.bind(this);
 	}
+
+  handlClick(e) {
+    this.props.inverse();
+
+    e.stopPropagation();
+    e.preventDefault();
+  }
 
 	render() {
 		var styleObj = {};
@@ -46,15 +54,19 @@ class ImgFigure extends React.Component {
 		}.bind(this));
 
 		if(this.props.imgArangeArr.isCenter) {
-			styleObj.zIndex = 11;
+			styleObj.zIndex = 111;
 		}
 
+    var classStr = 'img_figure';
+
+    classStr += this.props.imgArangeArr.isInverse ? ' is_inverse' : '';
+
 		return (
-			<figure className="img_figure" style={styleObj}>
+			<figure className={classStr} style={styleObj} onClick={this.handlClick}>
 				<img src={this.props.data.imgUrl} alt=""/>
 				<figcaption>
 					<h2 className="img_title">{this.props.data.caption}</h2>
-					<div className="img_back">{this.props.data.desc}</div>
+					<div className="img_back" onClick={this.handlClick}>{this.props.data.desc}</div>
 				</figcaption>
 			</figure>
 		);
@@ -100,7 +112,8 @@ class AppComponent extends React.Component {
 	  				top: 0
 	  			},
 	  			rotate: 0,
-	  			isCenter: false
+	  			isCenter: false,
+          isInverse: false
 	  		}*/
   		]
   	}
@@ -209,6 +222,22 @@ class AppComponent extends React.Component {
   	});
   }
 
+  /*
+   * 图片翻转函数
+   * @param 图片信息数组对应的序号、
+   * return 一个闭包函数，
+   */
+  inverse(index) {
+    return function() {
+      var imgArangeArr = this.state.imgArangeArr;
+      imgArangeArr[index].isInverse = !imgArangeArr[index].isInverse;
+
+      this.setState({
+        imgArangeArr: imgArangeArr
+      })
+    }.bind(this);
+  }
+
   render() {
   	var imgFigures = [];
 
@@ -222,13 +251,15 @@ class AppComponent extends React.Component {
 	  			top: '0px'
 	  		},
 	  		rotate: 0,
-	  		isCenter: false
+	  		isCenter: false,
+        isInverse: false
 	  	}
 	  }
 
   	  imgFigures.push(
   		<ImgFigure data={value}
   				   imgArangeArr= {imgArangeArr[index]}
+             inverse= {this.inverse(index)}
   				   key={'img_' + index}
   		/>);
   	}.bind(this));

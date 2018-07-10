@@ -3,51 +3,74 @@
 body {
   background: #222;
 }
-.stage {
-  width: 100%;
-  height: 600px;
-  background-color: #ddd;
-  position: absolute;
-  top: 50%;
-  margin-top: -300px;
-  overflow: hidden;
-  
-  perspective: 1800px;
-}
-.img_sec {
+
+body, html, #app {
   width: 100%;
   height: 100%;
 }
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 700px;
+  top: 50%;
+  margin-top: -350px;
+  overflow: hidden;
+  background-color: #ddd;
+}
+
+.img_sec {
+  width: 100%;
+  height: 100%;
+
+  perspective: 1800px;
+}
+
 .img_figure {
-  margin: 0;
+  position: absolute;
   width: 260px;
   height: 320px;
-  padding: 20px;
+  margin: 0;
+  padding: 26px;
   box-sizing: border-box;
-  position: absolute;
   background-color: #fff;
+  cursor: pointer;
 
+  transform-origin: 0 50% 0;
   transform-style: preserve-3d;
-  backface-visibility: hidden;
+  transition: transform .6s ease-in-out, left .6s ease-in-out, top .6s ease-in-out;
 }
+
 .img_figure img {
   width: 100%;
   height: 90%;
 }
-.img_figure .img_title {
+
+figcaption {
   text-align: center;
-  font-size: 16px;
 }
-.img_figure .img_back {
+
+figcaption .img_title {  
+  font-size: 16px;
+  color: #a7a2a0;
+}
+
+figcaption .img_back {
+  position: absolute;
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 26px;
   box-sizing: border-box;
   font-size: 14px;
-  position: absolute;
+  color: #aaa;
   top: 0;
   left: 0;
   background-color: #fff;
+  cursor: pointer;
 
   transform: rotateY(180deg);
+}
+
+.is_inverse {
+  transform: translate(260px) rotateY(180deg)!important;
 }
