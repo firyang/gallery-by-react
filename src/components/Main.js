@@ -39,7 +39,11 @@ class ImgFigure extends React.Component {
 	}
 
   handlClick(e) {
-    this.props.inverse();
+    if(this.props.imgArangeArr.isCenter) {
+      this.props.inverse();
+    } else {
+      this.props.center();
+    }
 
     e.stopPropagation();
     e.preventDefault();
@@ -54,7 +58,7 @@ class ImgFigure extends React.Component {
 		}.bind(this));
 
 		if(this.props.imgArangeArr.isCenter) {
-			styleObj.zIndex = 111;
+			styleObj.zIndex = 11;
 		}
 
     var classStr = 'img_figure';
@@ -159,12 +163,12 @@ class AppComponent extends React.Component {
    */
   rearange(index) {
   	var constant = this.Constant,
-  		centerPos = constant.centerPos,
-  		hPosRangeLeftX = constant.hPosRange.leftX,
-  		hPosRangeRightX = constant.hPosRange.rightX,
-  		hPosRangeY = constant.hPosRange.y,
-  		vPosRangeX = constant.vPosRange.x,
-  		vPosRangeTopY = constant.vPosRange.topY;
+  		  centerPos = constant.centerPos,
+  		  hPosRangeLeftX = constant.hPosRange.leftX,
+  		  hPosRangeRightX = constant.hPosRange.rightX,
+  		  hPosRangeY = constant.hPosRange.y,
+  		  vPosRangeX = constant.vPosRange.x,
+  	   	vPosRangeTopY = constant.vPosRange.topY;
 
   	var imgArangeArr = this.state.imgArangeArr;
 
@@ -172,13 +176,14 @@ class AppComponent extends React.Component {
   	var imgCenterArr = imgArangeArr.splice(index, 1);
   	imgCenterArr[0] = {
   		pos: centerPos,
+      rotate: 0,
   		isCenter: true
   	};
 
   	//布局上侧图片，取1张或0张
   	var num = Math.floor(Math.random() * 2),
-  		selectIndex =  Math.ceil(Math.random() * imgArangeArr.length),
-  		imgTopArr = [];
+  		  selectIndex =  Math.ceil(Math.random() * imgArangeArr.length),
+  		  imgTopArr = [];
   	imgTopArr = imgArangeArr.splice(selectIndex, num);
 
   	imgTopArr.forEach(function(value, ind) {
@@ -195,7 +200,7 @@ class AppComponent extends React.Component {
   	for(var i=0, j=imgArangeArr.length, k=j/2; i<j; i++) {
   		var hPosRangeLOR = [];
 
-		//i<k 表示左侧部分图片
+		//i<k 表示左侧部分图片，其他图片分部在右侧
   		if(i<k) {
   			hPosRangeLOR = hPosRangeLeftX;
   		} else {
@@ -211,6 +216,7 @@ class AppComponent extends React.Component {
 		}
   	}
 
+    //将imgTopArr、imgArangeArr中的图片插入到imgArangeArr中。
   	if(imgTopArr && imgTopArr[0]) {
   		imgArangeArr.splice(selectIndex, 0, imgTopArr[0]);
   	}
@@ -224,8 +230,8 @@ class AppComponent extends React.Component {
 
   /*
    * 图片翻转函数
-   * @param 图片信息数组对应的序号、
-   * return 一个闭包函数，
+   * @param 图片信息数组对应的序号
+   * return 一个闭包函数，点击居中的图片或对应的控制按钮，可翻转图片。
    */
   inverse(index) {
     return function() {
@@ -237,6 +243,17 @@ class AppComponent extends React.Component {
       })
     }.bind(this);
   }
+
+    /*
+   * 图片居中函数
+   * @param 图片信息数组对应的序号
+   * return 一个闭包函数，点击图片可实现居中，并重新布局其他图片。
+   */
+   center(index) {
+    return function() {
+      this.rearange(index);
+    }.bind(this);
+   }
 
   render() {
   	var imgFigures = [];
@@ -260,6 +277,7 @@ class AppComponent extends React.Component {
   		<ImgFigure data={value}
   				   imgArangeArr= {imgArangeArr[index]}
              inverse= {this.inverse(index)}
+             center = {this.center(index)}
   				   key={'img_' + index}
   		/>);
   	}.bind(this));
