@@ -78,6 +78,40 @@ class ImgFigure extends React.Component {
 }
 
 /*
+ * ControlNav组件
+ */
+ class ControlNav extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handlClick = this.handlClick.bind(this);
+  }
+
+  handlClick(e) {
+    if(this.props.imgArangeArr.isCenter) {
+      this.props.inverse();
+    } else {
+      this.props.center();
+    }
+
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  render() {
+    var classStr = 'item';
+
+    classStr += this.props.imgArangeArr.isCenter ? " is_center" : '';
+
+    classStr += this.props.imgArangeArr.isInverse ? " is_inverse" : '';
+
+    return (
+      <span className={classStr} onClick={this.handlClick}>&nbsp;</span>
+    )
+  }
+}
+
+
+/*
  * AppComponent组件
  */
 class AppComponent extends React.Component {
@@ -155,7 +189,6 @@ class AppComponent extends React.Component {
   	this.Constant.vPosRange.topY[1] = stageHhalf - imgHhalf*3;
 
   	this.rearange(0);
-
   }
 
   /*
@@ -249,14 +282,15 @@ class AppComponent extends React.Component {
    * @param 图片信息数组对应的序号
    * return 一个闭包函数，点击图片可实现居中，并重新布局其他图片。
    */
-   center(index) {
+  center(index) {
     return function() {
       this.rearange(index);
     }.bind(this);
-   }
+  }
 
   render() {
-  	var imgFigures = [];
+  	var imgFigures = [],
+        controlItems = [];
 
   	imgDatas.forEach(function(value, index) {
   	  var imgArangeArr = this.state.imgArangeArr;
@@ -280,11 +314,20 @@ class AppComponent extends React.Component {
              center = {this.center(index)}
   				   key={'img_' + index}
   		/>);
+
+      controlItems.push(
+        <ControlNav item= {index}
+                    imgArangeArr= {imgArangeArr[index]}
+                    inverse= {this.inverse(index)}
+                    center = {this.center(index)}
+                    key={'i_' + index}
+      />);
   	}.bind(this));
 
     return (
       <section className="stage" ref={this.setStageRef}>
-      	<section className="img_sec">{imgFigures}</section>
+        <section className="img_sec">{imgFigures}</section>
+      	<nav className="control_nav">{controlItems}</nav>
       </section>
     );
   }
